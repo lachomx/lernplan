@@ -60,7 +60,7 @@ const L = {
 
 // ---------- Aufgaben-Bausteine ----------
 // cat: karten · input · sprechen · saetze · orga
-const K = (min, text = 'Karten', detail = 'Wiederholungen zuerst, dann neue Karten') => ({ cat: 'karten', min, text, detail });
+const K = (min, text = 'Karten', detail = 'Tagesplan in der Karteikarten-App: Wiederholungen zuerst, dann „Lernen“') => ({ cat: 'karten', min, text, detail });
 const I = (min, text, link, detail) => ({ cat: 'input', min, text, link, detail });
 const S = (min, text, detail) => ({ cat: 'sprechen', min, text, detail });
 const Z = (min, text, detail) => ({ cat: 'saetze', min, text, detail });
@@ -77,7 +77,7 @@ const EXTENSIV = I(30, 'Extensiv nach Lust', null, 'Entspannt schauen, hören od
 // ---------- Woche 1–4 Tag für Tag (Kapitel 4) ----------
 const WEEKS_1_4 = {
   // Woche 1
-  '2026-11-02': [O(15, 'Einrichten: Decks 00–03 importieren und Tagesplan einschalten', 'Karteikarten-App › Einstellungen › Tagesplan: Decks 00–03 auswählen und den Agenten einschalten. Er holt jeden Tag die geplanten Karten ins Deck „Lernen“.'), K(10, 'Erste Karten'), I(10, 'YouTube-Input', L.youtube)],
+  '2026-11-02': [K(15, 'Erste Karten im Deck „Lernen“'), I(20, 'YouTube-Input', L.youtube, 'Leichte Videos mit koreanischen Untertiteln'), S(5, 'Fünf Familien-Sätze laut lesen', 'Aus Deck 3 bzw. Kapitel 9 des Plans')],
   '2026-11-03': [K(10), I(25, 'Easy Korean mit Untertiteln (extensiv)', L.easy), S(5, 'Fünf Familien-Sätze laut lesen', 'Aus Deck 03 bzw. Kapitel 9 des Plans')],
   '2026-11-04': [K(10), I(15, 'Talk To Me In Korean', L.ttmik), GESPR('Mit deiner Freundin die Begrüßungssätze üben')],
   '2026-11-05': [K(10), I(25, 'Pororo (extensiv, nur hören und schauen)', L.pororo), S(5, 'Familien-Sätze laut sprechen')],
@@ -93,7 +93,7 @@ const WEEKS_1_4 = {
   '2026-11-14': [K(15), opt(I(45, 'Eine Folge mit koreanischen Untertiteln'))],
   '2026-11-15': [K(15), WOCHENTEST, GESPR()],
   // Woche 3
-  '2026-11-16': [O(5, 'Decks 07 und 04 importieren und im Tagesplan auswählen'), K(10), I(25, 'Kletter-Vlog intensiv', L.climb), SAETZE],
+  '2026-11-16': [K(10), I(25, 'Kletter-Vlog intensiv', L.climb), SAETZE],
   '2026-11-17': [K(10), I(25, 'Webtoon: 유미의 세포들', L.yumi), SHADOW],
   '2026-11-18': [K(10), I(20, 'Easy Korean intensiv', L.easy), SAETZE, GESPR('Gespräch übers Klettern')],
   '2026-11-19': [K(10), I(25, 'Graded Reader', L.reader), SHADOW],
@@ -174,6 +174,28 @@ export function isMonthTestDay(date) {
   return weekday(date) === 6 && addDays(date, 7).slice(5, 7) !== date.slice(5, 7) && date >= START && date <= PLAN_END;
 }
 
+// Ziel: ca. 60 Minuten pro Tag bis zur Reise. Fehlt Zeit (vor allem am Wochenende), kommt passender Zusatz dazu.
+const DAILY_TARGET = 60;
+function topUp(date, week, wd, morningMin, tasks) {
+  if (date >= TRIP_START) return tasks;
+  const have = morningMin + tasks.filter((t) => !t.optional).reduce((n, t) => n + t.min, 0);
+  let gap = Math.round((DAILY_TARGET - have) / 5) * 5;
+  if (gap < 10) return tasks;
+  // Eine freiwillige Folge zählt dann fest mit (bei Bedarf gekürzt)
+  const out = tasks.map((t) => {
+    if (!(t.optional && t.cat === 'input' && gap >= 20)) return t;
+    const min = Math.min(t.min, gap);
+    gap -= min;
+    return { ...t, min, optional: false };
+  });
+  if (gap >= 20) {
+    out.push(S(10, week >= 14 ? 'Rollenspiel oder freies Erzählen' : 'Selbstgespräch oder Shadowing', week >= 14 ? 'Eine Situation aus Korea durchspielen (Taxi, Restaurant, bei den Eltern)' : '1–2 Minuten aus deinem Input nachsprechen oder laut über deinen Tag erzählen'));
+    gap -= 10;
+  }
+  if (gap >= 10) out.push(I(gap, wd >= 5 || HOLIDAYS.has(date) ? 'Extensiver Input nach Lust' : 'Zusätzlicher Input', L.youtube, 'Serie, Webtoon, Kletter-Vlog oder YouTube – entspannt, nichts nachschlagen'));
+  return out;
+}
+
 const withIds = (date, slot, tasks) => tasks.filter(Boolean).map((t, i) => ({ ...t, id: `${date}:${slot}:${i}` }));
 
 export function getDay(date) {
@@ -183,8 +205,8 @@ export function getDay(date) {
   if (!day.inPlan) return day;
 
   if (day.holiday) {
-    day.evening = withIds(date, 'e', [K(15, 'Karten', 'Feiertag: neue Karten und Wiederholungen, sonst frei'), opt(I(30, 'Eine Folge mit koreanischen Untertiteln'))]);
-    day.notes.push('Feiertag: Karten reichen, alles andere ist freiwillig.');
+    day.evening = withIds(date, 'e', topUp(date, week, wd, 0, [K(15, 'Karten', 'Feiertag: neue Karten und Wiederholungen'), I(30, 'Eine Folge mit koreanischen Untertiteln', null, 'Gern mit deiner Freundin oder der Familie')]));
+    day.notes.push('Feiertag: entspannt lernen, gern zusammen mit deiner Freundin.');
     return day;
   }
 
@@ -211,8 +233,6 @@ export function getDay(date) {
 
   // Besondere Tage
   const extra = {
-    '2026-12-07': [O(5, 'Deck 05 Klettern importieren und im Tagesplan auswählen', '3 neue Karten pro Tag')],
-    '2026-12-14': [O(5, 'Deck 06 Psychologie importieren und im Tagesplan auswählen', '3 neue Karten pro Tag')],
     '2027-01-09': [O(10, 'Videotelefonat vorbereiten: 5 Fragen an die Eltern', 'Höflichkeitsformen aus Deck 03 nutzen')],
     '2027-01-10': [S(10, 'Erstes Videotelefonat mit den Eltern auf Koreanisch')],
     '2027-02-06': [O(10, 'Videotelefonat vorbereiten: Fragen und Themen')],
@@ -234,7 +254,8 @@ export function getDay(date) {
     if (t) Object.assign(t, { text: 'Wochen- und Monatstest', detail: 'Zusätzlich: unbekanntes Video und 2 Minuten über deine Woche aufnehmen' });
   }
 
-  day.evening = withIds(date, 'e', tasks);
+  const morningMin = day.morning ? (day.morning.bus ?? day.morning.trip ?? []).reduce((n, t) => n + t.min, 0) : 0;
+  day.evening = withIds(date, 'e', topUp(date, week, wd, morningMin, tasks));
 
   // Hinweise
   if (week >= 10 && week <= 13 && date <= PLAN_END) day.notes.push('Januar: Hauptquelle für neue Karten ist Deck 08 mit ca. 8 eigenen Sätzen pro Tag.');

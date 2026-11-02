@@ -1,5 +1,5 @@
 // Offline-Unterstützung: erst Netzwerk, bei fehlender Verbindung aus dem Cache.
-const CACHE = 'lernplan-v3';
+const CACHE = 'lernplan-v4';
 const SHELL = [
   './', 'index.html', 'styles.css', 'manifest.webmanifest', 'icon.svg',
   'js/app.js', 'js/plan.js', 'js/dates.js', 'js/store.js', 'js/vocab.js', 'js/logic.js', 'js/test.js', 'js/chart.js', 'js/ui.js', 'js/sync.js', 'js/csv.js', 'vokabelplan.json',
