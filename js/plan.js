@@ -77,10 +77,10 @@ const EXTENSIV = I(30, 'Extensiv nach Lust', null, 'Entspannt schauen, hören od
 // ---------- Woche 1–4 Tag für Tag (Kapitel 4) ----------
 const WEEKS_1_4 = {
   // Woche 1
-  '2026-11-02': [K(15, 'Abendrunde: die heutigen Karten noch einmal', 'Karteikarten-App › Startseite › „Abendrunde“. Ändert die Planung der Karten nicht.'), I(20, 'YouTube-Input', L.youtube, 'Leichte Videos mit koreanischen Untertiteln'), S(5, 'Fünf Familien-Sätze laut lesen', 'Aus Deck 3 bzw. Kapitel 9 des Plans')],
-  '2026-11-03': [K(10), I(25, 'Easy Korean mit Untertiteln (extensiv)', L.easy), S(5, 'Fünf Familien-Sätze laut lesen', 'Aus Deck 03 bzw. Kapitel 9 des Plans')],
+  '2026-11-02': [K(15, 'Abendrunde: die heutigen Karten noch einmal', 'Karteikarten-App › Ordner „Tagesplan“ › Abendrunde. Ändert die Planung der Karten nicht.'), I(20, 'YouTube-Input', L.youtube, 'Leichte Videos mit koreanischen Untertiteln'), S(5, '10 Sätze laut vorlesen', 'Karteikarten-App › Ordner „Tagesplan“ › Vorlesen')],
+  '2026-11-03': [K(10), I(25, 'Easy Korean mit Untertiteln (extensiv)', L.easy), S(5, '10 Sätze laut vorlesen', 'Karteikarten-App › Ordner „Tagesplan“ › Vorlesen')],
   '2026-11-04': [K(10), I(15, 'Talk To Me In Korean', L.ttmik), GESPR('Mit deiner Freundin die Begrüßungssätze üben')],
-  '2026-11-05': [K(10), I(25, 'Pororo (extensiv, nur hören und schauen)', L.pororo), S(5, 'Familien-Sätze laut sprechen')],
+  '2026-11-05': [K(10), I(25, 'Pororo (extensiv, nur hören und schauen)', L.pororo), S(5, '10 Sätze laut vorlesen', 'Karteikarten-App › Ordner „Tagesplan“ › Vorlesen')],
   '2026-11-06': [K(10), I(30, 'Extensiv nach Lust: YouTube-Input oder Easy Korean', L.youtube)],
   '2026-11-07': [K(15), O(10, 'Language Reactor in Chrome installieren und an einem Video testen', null), opt(I(45, 'Eine Folge mit deiner Freundin'))],
   '2026-11-08': [K(15), O(10, 'Referenzvideo festlegen (Easy Korean, 3 Min.)', 'In dieser App unter „Mehr“ eintragen. Ab jetzt jede Woche dieselben 3 Minuten ohne Untertitel.'), GESPR(), WOCHENTEST],
