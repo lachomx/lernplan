@@ -60,7 +60,7 @@ const L = {
 
 // ---------- Aufgaben-Bausteine ----------
 // cat: karten · input · sprechen · saetze · orga
-const K = (min, text = 'Karten', detail = 'Tagesplan in der Karteikarten-App: Wiederholungen zuerst, dann „Lernen“') => ({ cat: 'karten', min, text, detail });
+const K = (min, text = 'Karten: Rest und Abendrunde', detail = 'Was morgens liegen blieb (erst „Wiederholen“, dann „Lernen“), danach die Abendrunde: die heute gelernten Karten noch einmal') => ({ cat: 'karten', min, text, detail });
 const I = (min, text, link, detail) => ({ cat: 'input', min, text, link, detail });
 const S = (min, text, detail) => ({ cat: 'sprechen', min, text, detail });
 const Z = (min, text, detail) => ({ cat: 'saetze', min, text, detail });
@@ -77,7 +77,7 @@ const EXTENSIV = I(30, 'Extensiv nach Lust', null, 'Entspannt schauen, hören od
 // ---------- Woche 1–4 Tag für Tag (Kapitel 4) ----------
 const WEEKS_1_4 = {
   // Woche 1
-  '2026-11-02': [K(15, 'Erste Karten im Deck „Lernen“'), I(20, 'YouTube-Input', L.youtube, 'Leichte Videos mit koreanischen Untertiteln'), S(5, 'Fünf Familien-Sätze laut lesen', 'Aus Deck 3 bzw. Kapitel 9 des Plans')],
+  '2026-11-02': [K(15, 'Abendrunde: die heutigen Karten noch einmal', 'Karteikarten-App › Startseite › „Abendrunde“. Ändert die Planung der Karten nicht.'), I(20, 'YouTube-Input', L.youtube, 'Leichte Videos mit koreanischen Untertiteln'), S(5, 'Fünf Familien-Sätze laut lesen', 'Aus Deck 3 bzw. Kapitel 9 des Plans')],
   '2026-11-03': [K(10), I(25, 'Easy Korean mit Untertiteln (extensiv)', L.easy), S(5, 'Fünf Familien-Sätze laut lesen', 'Aus Deck 03 bzw. Kapitel 9 des Plans')],
   '2026-11-04': [K(10), I(15, 'Talk To Me In Korean', L.ttmik), GESPR('Mit deiner Freundin die Begrüßungssätze üben')],
   '2026-11-05': [K(10), I(25, 'Pororo (extensiv, nur hören und schauen)', L.pororo), S(5, 'Familien-Sätze laut sprechen')],
@@ -147,7 +147,7 @@ function morning(date, week) {
     ? [I(15, 'Podcast oder Hörbuch', L.ttmik, 'Folgen am Vorabend herunterladen'), S(5, 'Selbstgespräch auf Koreanisch', '„오늘은 … 할 거예요“ – laut oder leise')]
     : [I(20, 'Podcast oder Hörbuch', L.ttmik, 'Folgen am Vorabend herunterladen')];
   return {
-    bus: [K(15, 'Karten am Handy', 'Wiederholungen zuerst'), I(5, 'Podcast', L.ttmik)],
+    bus: [K(15, 'Karten am Handy', 'Tagesplan: erst „Wiederholen“, dann die neuen Karten in „Lernen“'), I(5, 'Podcast', L.ttmik)],
     walk,
   };
 }
@@ -230,6 +230,8 @@ export function getDay(date) {
     tasks = FEB[wd].map((t) => t ?? S(15, `Rollenspiel: ${ROLLEN[roleIdx % ROLLEN.length]}`, 'Mit deiner Freundin, 15 Minuten'));
   }
   tasks = tasks.map((t) => ({ ...t }));
+  // Ohne Pendeln (Wochenende) sind die Abendkarten die Hauptrunde des Tages
+  if (!day.morning) for (const t of tasks) if (t.cat === 'karten' && t.text === 'Karten: Rest und Abendrunde') Object.assign(t, { text: 'Karten', detail: 'Tagesplan: erst „Wiederholen“, dann die neuen Karten in „Lernen“' });
 
   // Besondere Tage
   const extra = {
