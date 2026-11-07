@@ -211,7 +211,7 @@ function agentStatus(date, planned) {
   if (!a.enabled) return `<p class="agent-note muted small">Der Tagesplan-Agent ist in der Karteikarten-App ausgeschaltet (Einstellungen › Tagesplan).</p>`;
   if (r?.day === date) {
     const extra = [r.backlog ? `${r.backlog} noch im Rückstand` : '', r.unmatched ? `${r.unmatched} Karten nicht gefunden` : ''].filter(Boolean).join(' · ');
-    return `<div class="agent-note ok">${icon.check}<div><b>${r.added} Karten liegen im Deck „Lernen“</b><span>Karteikarten-App · ${r.fromPlan ?? r.added} laut Plan${r.catchUp ? `, ${r.catchUp} nachgeholt` : ''}${extra ? ' · ' + extra : ''}</span></div></div>`;
+    return `<div class="agent-note ok">${icon.check}<div><b>${r.added} Karten liegen im Deck „Lernen“</b><span>Karteikarten-App · ${r.fromPlan ?? r.added} laut Plan${r.catchUp ? `, ${r.catchUp} nachgeholt` : ''}${r.active ? `, dazu ${r.active} aktiv (Deutsch → Koreanisch)` : ''}${extra ? ' · ' + extra : ''}</span></div></div>`;
   }
   if (date === today()) return `<p class="agent-note muted small">Noch nicht bereitgestellt: Der Agent legt ${planned ? `die ${planned} Karten` : 'die Karten'} beim ersten Öffnen der Karteikarten-App ins Deck „Lernen“.</p>`;
   return '';

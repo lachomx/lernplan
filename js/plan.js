@@ -174,6 +174,21 @@ export function isMonthTestDay(date) {
   return weekday(date) === 6 && addDays(date, 7).slice(5, 7) !== date.slice(5, 7) && date >= START && date <= PLAN_END;
 }
 
+// Aktiver Abruf (Deutsch → Koreanisch) kostet mit der Zeit mehr Kartenzeit; sie geht vom längsten Input-Block ab.
+const ACTIVE_HINT = ' Karten mit #aktiv: den Satz laut auf Koreanisch sagen, dann aufdecken.';
+function shiftToCards(date, tasks) {
+  const extra = date >= '2027-01-04' ? 10 : date >= '2026-12-01' ? 5 : 0;
+  const card = tasks.find((t) => t.cat === 'karten');
+  if (!card) return tasks;
+  if (date >= '2026-11-10') card.detail = (card.detail ?? '') + ACTIVE_HINT;
+  const input = tasks.filter((t) => t.cat === 'input' && !t.optional && t.min - extra >= 10).sort((a, b) => b.min - a.min)[0];
+  if (extra && input) {
+    input.min -= extra;
+    card.min += extra;
+  }
+  return tasks;
+}
+
 // Ziel: ca. 60 Minuten pro Tag bis zur Reise. Fehlt Zeit (vor allem am Wochenende), kommt passender Zusatz dazu.
 const DAILY_TARGET = 60;
 function topUp(date, week, wd, morningMin, tasks) {
@@ -205,7 +220,7 @@ export function getDay(date) {
   if (!day.inPlan) return day;
 
   if (day.holiday) {
-    day.evening = withIds(date, 'e', topUp(date, week, wd, 0, [K(15, 'Karten', 'Feiertag: neue Karten und Wiederholungen'), I(30, 'Eine Folge mit koreanischen Untertiteln', null, 'Gern mit deiner Freundin oder der Familie')]));
+    day.evening = withIds(date, 'e', topUp(date, week, wd, 0, shiftToCards(date, [K(15, 'Karten', 'Feiertag: neue Karten und Wiederholungen'), I(30, 'Eine Folge mit koreanischen Untertiteln', null, 'Gern mit deiner Freundin oder der Familie')])));
     day.notes.push('Feiertag: entspannt lernen, gern zusammen mit deiner Freundin.');
     return day;
   }
@@ -257,7 +272,7 @@ export function getDay(date) {
   }
 
   const morningMin = day.morning ? (day.morning.bus ?? day.morning.trip ?? []).reduce((n, t) => n + t.min, 0) : 0;
-  day.evening = withIds(date, 'e', topUp(date, week, wd, morningMin, tasks));
+  day.evening = withIds(date, 'e', topUp(date, week, wd, morningMin, date < TRIP_START ? shiftToCards(date, tasks) : tasks));
 
   // Hinweise
   if (week >= 10 && week <= 13 && date <= PLAN_END) day.notes.push('Januar: Hauptquelle für neue Karten ist Deck 08 mit ca. 8 eigenen Sätzen pro Tag.');
