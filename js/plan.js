@@ -10,9 +10,10 @@ export const TRIP_END = '2027-03-31';
 // ---------- Decks (Kapitel 6, Stand 02.11.: Schwerpunkt häufige Wörter) ----------
 // rates: ab Datum gilt diese Anzahl neuer Karten pro Tag
 // spread: das ganze Deck gleichmäßig auf jeden Tag vom Start bis zum Plan-Ende verteilen (auch Feiertage)
+// cut: [Datum, n] – ab diesem Datum statt der gleichmäßigen Verteilung feste n Karten pro Tag (16.11.: 10 Karten weniger pro Tag, Trefferquote < 80 %)
 export const DECKS = [
-  { id: '00', file: '00_Haeufige-Woerter.csv', name: 'Häufige Wörter', dir: 'KO → DE', type: 'vocab', spread: true },
-  { id: '01', file: '01_Yonsei-Wortschatz.csv', name: 'Yonsei-Wortschatz', dir: 'KO → DE', type: 'vocab', spread: true },
+  { id: '00', file: '00_Haeufige-Woerter.csv', name: 'Häufige Wörter', dir: 'KO → DE', type: 'vocab', spread: true, cut: ['2026-11-17', 10] },
+  { id: '01', file: '01_Yonsei-Wortschatz.csv', name: 'Yonsei-Wortschatz', dir: 'KO → DE', type: 'vocab', spread: true, cut: ['2026-11-17', 3] },
   { id: '02', file: '02_Grammatik.csv', name: 'Grammatik', dir: 'Muster + Satz', type: 'grammar', rates: [['2026-11-02', 2]] },
   { id: '03', file: '03_Sprechen-Familie.csv', name: 'Sprechen Familie', dir: 'DE → KO', type: 'speak', rates: [['2026-11-02', 4]] },
   { id: '07', file: '07_Grundwortschatz.csv', name: 'Grundwortschatz', dir: 'KO → DE', type: 'vocab', rates: [['2026-11-16', 5]] },
