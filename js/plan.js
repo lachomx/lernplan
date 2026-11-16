@@ -26,18 +26,19 @@ export const DECKS = [
 export const HOLIDAYS = new Set(['2026-12-24', '2026-12-25', '2026-12-26', '2026-12-27', '2026-12-31', '2027-01-01']);
 
 // ---------- Meilensteine (Kapitel 3) ----------
+// Wortzahlen seit 16.11.: rund 500 sichere Wörter (Einstufung) + bis dahin eingeführte Vokabelkarten laut vokabelplan.json
 export const MILESTONES = [
-  { id: 'm1', date: '2026-11-29', words: 1800, items: ['Yonsei-Deck zu rund zwei Dritteln eingeführt, ca. 1.800 Wörter', 'Easy Korean mit koreanischen Untertiteln zu 70 % verstanden', '10 Höflichkeitswendungen frei abrufbar'] },
-  { id: 'm2', date: '2026-12-27', words: 2200, items: ['ca. 2.200 Wörter, Grundwortschatz-Deck durch', 'ein Webtoon-Band gelesen', '10 Minuten über deinen Tag ohne Deutsch'] },
-  { id: 'm3', date: '2027-01-31', words: 2600, items: ['ca. 2.600 Wörter', 'vertraute Serie mit koreanischen Untertiteln verstanden', 'erstes Videotelefonat mit den Schwiegereltern auf Koreanisch'] },
-  { id: 'm4', date: '2027-02-28', words: 3000, items: ['ca. 3.000 Wörter', 'Kletter-Vlog ohne Untertitel zu 75 % verstanden', '20 Minuten Gespräch mit deiner Freundin'] },
+  { id: 'm1', date: '2026-11-29', words: 1100, items: ['ca. 1.100 Wörter (rund 330 häufige und 180 Yonsei-Wörter neu eingeführt)', 'Easy Korean mit koreanischen Untertiteln zu 70 % verstanden', '10 Höflichkeitswendungen frei abrufbar'] },
+  { id: 'm2', date: '2026-12-27', words: 1650, items: ['ca. 1.650 Wörter, Grundwortschatz-Deck durch', 'ein Webtoon-Band gelesen', '10 Minuten über deinen Tag ohne Deutsch'] },
+  { id: 'm3', date: '2027-01-31', words: 2100, items: ['ca. 2.100 Wörter', 'vertraute Serie mit koreanischen Untertiteln verstanden', 'erstes Videotelefonat mit den Schwiegereltern auf Koreanisch'] },
+  { id: 'm4', date: '2027-02-28', words: 2450, items: ['ca. 2.450 Wörter', 'Kletter-Vlog ohne Untertitel zu 75 % verstanden', '20 Minuten Gespräch mit deiner Freundin'] },
 ];
 
 // ---------- Zielwerte für die Wochenkennzahlen (Kapitel 10) ----------
 export function targets(week) {
   const month = week <= 4 ? 'nov' : week <= 9 ? 'dez' : 'janfeb';
   return {
-    newCards: week <= 3 ? 250 : 150,
+    newCards: week <= 2 ? 250 : week <= 7 ? 150 : 100, // seit 16.11. an den kleineren Vokabelplan angepasst
     hitRate: 85,
     inputHours: week <= 4 ? 4 : 6,
     speakMin: { nov: 20, dez: 40, janfeb: 60 }[month],
